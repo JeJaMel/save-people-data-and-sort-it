@@ -4,8 +4,7 @@
 
 using namespace std;
 
-struct Persona
-{
+struct Persona {
     string name;
     int age;
     string city;
@@ -14,9 +13,8 @@ struct Persona
 };
 
 void introduceMe(const Persona&);
-void merge(int arr[], int left[], int right[], int left_size, int right_size);
-void mergeSort(int arr[], int size);
-
+void merge(Persona arr[], Persona left[], Persona right[], int left_size, int right_size);
+void mergeSort(Persona arr[], int left, int right);
 
 Persona getDataFromUser() {
     Persona p;
@@ -32,10 +30,12 @@ Persona getDataFromUser() {
     cin >> p.id;
     return p;
 }
+
 const int MAX = 100;
+
 int main() {
-Persona persons[MAX];
-int numPersons = 0;
+    Persona persons[MAX];
+    int numPersons = 0;
 
     fstream Archive;
     Archive.open("data.csv", ios::out);
@@ -47,10 +47,10 @@ int numPersons = 0;
 
     while (true) {
         Persona person = getDataFromUser();
-        if(numPersons < MAX){
+        if (numPersons < MAX) {
             persons[numPersons++] = person;
-        }else{
-            cout<<"list is full"<<endl;
+        } else {
+            cout << "List is full" << endl;
         }
         Archive << person.id << "," << person.name << "," << person.age << "," << person.city << "," << person.country << endl;
         introduceMe(person);
@@ -60,17 +60,40 @@ int numPersons = 0;
         cin >> a;
         if (a[0] != 'Y' && a[0] != 'y') {
             Archive.close();
-            return 0;
+            break;
         }
-    }Archive.close();
+    }
+
+    Archive.close();
 
     Archive.open("data.csv");
-    if(!Archive.is_open()) {
+    if (!Archive.is_open()) {
         cout << "Unable to open the file" << endl;
         return 1;
     }
 
-
+    cout << "Do you want to sort the data? (y/n)" << endl;
+    string b;
+    cin >> b;
+    if (b[0] == 'Y' || b[0] == 'y') {
+        mergeSort(persons, 0, numPersons - 1);
+        fstream Sorted_data;
+        Sorted_data.open("Sorted_data.csv", ios::out);
+        if (!Sorted_data.is_open()) {
+            cout << "Unable to open the file" << endl;
+            return 1;
+        }
+        for (int i = 0; i < numPersons; i++) {
+            Sorted_data << persons[i].id << "," << persons[i].name << "," << persons[i].age << "," << persons[i].city << "," << persons[i].country << endl;
+        }
+        Sorted_data.close();
+        cout << "Sorted data has been written to Sorted_data.csv" << endl;
+    } else {
+        cout << "Data has not been sorted" << endl;
+        for (int i = 0; i < numPersons; i++) {
+            introduceMe(persons[i]);
+        }
+    }
 
     return 0;
 }
@@ -99,25 +122,26 @@ void merge(Persona arr[], Persona left[], Persona right[], int left_size, int ri
     }
 }
 
+void mergeSort(Persona arr[], int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+        int left_size = mid - left + 1;
+        int right_size = right - mid;
 
-void mergeSort(Persona arr[], int size) {
-    if (size <= 1) {
-        return; 
+        Persona leftArray[left_size];
+        Persona rightArray[right_size];
+
+        for (int i = 0; i < left_size; i++) {
+            leftArray[i] = arr[left + i];
+        }
+
+        for (int i = 0; i < right_size; i++) {
+            rightArray[i] = arr[mid + 1 + i];
+        }
+
+        mergeSort(leftArray, 0, left_size - 1);
+        mergeSort(rightArray, 0, right_size - 1);
+
+        merge(arr, leftArray, rightArray, left_size, right_size);
     }
-
-    int mid = size / 2;
-    Persona left[mid];
-    Persona right[size - mid];
-
-    for (int i = 0; i < mid; i++) {
-        left[i] = arr[i];
-    }
-    for (int i = mid; i < size; i++) {
-        right[i - mid] = arr[i];
-    }
-
-    mergeSort(left, mid);
-    mergeSort(right, size - mid);
-
-    merge(arr, left, right, mid, size - mid);
 }
