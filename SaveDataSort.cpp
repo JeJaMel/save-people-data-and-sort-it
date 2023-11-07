@@ -32,8 +32,11 @@ Persona getDataFromUser() {
     cin >> p.id;
     return p;
 }
-
+const int MAX = 100;
 int main() {
+Persona persons[MAX];
+int numPersons = 0;
+
     fstream Archive;
     Archive.open("data.csv", ios::out);
 
@@ -44,6 +47,11 @@ int main() {
 
     while (true) {
         Persona person = getDataFromUser();
+        if(numPersons < MAX){
+            persons[numPersons++] = person;
+        }else{
+            cout<<"list is full"<<endl;
+        }
         Archive << person.id << "," << person.name << "," << person.age << "," << person.city << "," << person.country << endl;
         introduceMe(person);
 
@@ -71,11 +79,11 @@ void introduceMe(const Persona& p) {
     cout << "The data |" << p.name << "|, |" << p.age << "|, |" << p.city << "|, |" << p.country << "|, |" << p.id << "| has been saved in the file" << endl;
 }
 
-void merge(int arr[], int left[], int right[], int left_size, int right_size) {
+void merge(Persona arr[], Persona left[], Persona right[], int left_size, int right_size) {
     int i = 0, j = 0, k = 0;
     
     while (i < left_size && j < right_size) {
-        if (left[i] <= right[j]) {
+        if (left[i].id <= right[j].id) {
             arr[k++] = left[i++];
         } else {
             arr[k++] = right[j++];
@@ -91,14 +99,15 @@ void merge(int arr[], int left[], int right[], int left_size, int right_size) {
     }
 }
 
-void mergeSort(int arr[], int size) {
+
+void mergeSort(Persona arr[], int size) {
     if (size <= 1) {
         return; 
     }
 
     int mid = size / 2;
-    int left[mid];
-    int right[size - mid];
+    Persona left[mid];
+    Persona right[size - mid];
 
     for (int i = 0; i < mid; i++) {
         left[i] = arr[i];
