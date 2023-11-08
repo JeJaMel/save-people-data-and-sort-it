@@ -1,6 +1,9 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cmath>
+#include<cstdlib>
+#include <iomanip>
 
 using namespace std;
 
@@ -15,18 +18,19 @@ struct Persona {
 void introduceMe(const Persona&);
 void merge(Persona arr[], Persona left[], Persona right[], int left_size, int right_size);
 void mergeSort(Persona arr[], int left, int right);
+void WhatToDO();
 
 Persona getDataFromUser() {
     Persona p;
-    cout << "What's your name?" << endl;
+    cout << "Enter your first name" << endl;
     cin >> p.name;
-    cout << "How old are you?" << endl;
+    cout << "Enter your age" << endl;
     cin >> p.age;
-    cout << "What city are you from?" << endl;
+    cout << "Enter the city where you live" << endl;
     cin >> p.city;
-    cout << "What country are you from?" << endl;
+    cout << "Enter the country where you was born" << endl;
     cin >> p.country;
-    cout << "Enter an ID:" << endl;
+    cout << "Enter your ID:" << endl;
     cin >> p.id;
     return p;
 }
@@ -36,12 +40,30 @@ const int MAX = 100;
 int main() {
     Persona persons[MAX];
     int numPersons = 0;
+    int anybutton;
+    int FirstChoice;
 
-    fstream Archive;
-    Archive.open("data.csv", ios::out);
+    cout<<"\n \t\tWelcome to user data management\n\t\tPress any button to continue..."<<endl;
+    cin>>anybutton;
+
+    cout<<"\tWhat do you want to do?"<<endl;
+
+    cout<<"\nAdd people to data.csv...      (1)"<<endl;
+    cout<<"Remove people from data.csv... (2)"<<endl;
+    cout<<"View data.csv on terminal...   (3)"<<endl;
+    cout<<"View Sorted_data on terminal...(4)"<<endl;
+    cout<<"Sort untracked data...         (5)"<<endl;
+    cout<<"save and end program...        (6)"<<endl;
+        cin>>FirstChoice;
+
+switch (FirstChoice)
+{
+case 1:
+fstream Archive;
+    Archive.open("data.csv", ios::app);
 
     if (!Archive.is_open()) {
-        cout << "Unable to create the file" << endl;
+        cout << "Unable to open the file" << endl;
         return 1;
     }
 
@@ -95,6 +117,16 @@ int main() {
         }
     }
 
+    break;
+
+
+
+   
+}
+
+
+    
+
     return 0;
 }
 
@@ -145,3 +177,5 @@ void mergeSort(Persona arr[], int left, int right) {
         merge(arr, leftArray, rightArray, left_size, right_size);
     }
 }
+
+
